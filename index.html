@@ -1,0 +1,966 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Charged For Christ • Song Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #F9F6F0;
+            color: #1A1A1A;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+        .header {
+            background: #4A2C2A;
+            padding: 20px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+            .header h1 {
+                color: #F9F6F0;
+                font-size: 2rem;
+                font-family: Georgia, serif;
+            }
+
+            .header small {
+                color: #D4C5B2;
+                display: block;
+                font-size: 0.9rem;
+            }
+
+            .header .count {
+                background: #A67B5B;
+                color: #1A1A1A;
+                padding: 8px 20px;
+                border-radius: 30px;
+                font-weight: bold;
+            }
+
+        /* CARDS */
+        .card {
+            background: #F3EBE1;
+            padding: 25px;
+            border-radius: 16px;
+            border-left: 6px solid #A67B5B;
+            margin-bottom: 25px;
+        }
+
+            .card h2 {
+                color: #4A2C2A;
+                margin-bottom: 15px;
+                font-family: Georgia, serif;
+            }
+
+        /* FORM */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+            .form-group label {
+                display: block;
+                font-weight: 600;
+                color: #4A2C2A;
+                margin-bottom: 5px;
+            }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #D4C5B2;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: white;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+            input:focus,
+            textarea:focus {
+                outline: none;
+                border-color: #A67B5B;
+            }
+
+        /* BUTTONS */
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-success {
+            background: #2E7D32;
+            color: white;
+        }
+
+            .btn-success:hover {
+                background: #1B5E20;
+            }
+
+        .btn-danger {
+            background: #C62828;
+            color: white;
+        }
+
+            .btn-danger:hover {
+                background: #8E0000;
+            }
+
+        .btn-primary {
+            background: #A67B5B;
+            color: #1A1A1A;
+        }
+
+            .btn-primary:hover {
+                background: #8B6B4F;
+            }
+
+        .btn-dark {
+            background: #4A2C2A;
+            color: #F9F6F0;
+        }
+
+            .btn-dark:hover {
+                background: #2A1A18;
+            }
+
+        .btn-small {
+            padding: 5px 14px;
+            font-size: 0.8rem;
+        }
+
+        /* RECORDER */
+        .recorder {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 15px;
+            background: #F9F6F0;
+            border-radius: 12px;
+            border: 2px dashed #D4C5B2;
+            margin-top: 10px;
+        }
+
+            .recorder .status {
+                color: #5C4A3A;
+                font-style: italic;
+            }
+
+            .recorder .timer {
+                font-weight: bold;
+                color: #4A2C2A;
+                min-width: 60px;
+            }
+
+        .recording-indicator {
+            display: none;
+            color: #C62828;
+            font-weight: bold;
+        }
+
+            .recording-indicator.active {
+                display: inline;
+            }
+
+        /* SONG LIST */
+        .song-item {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid #D4C5B2;
+            margin-bottom: 10px;
+        }
+
+            .song-item .top-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .song-item .title {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #4A2C2A;
+            }
+
+            .song-item .key {
+                background: #D4C5B2;
+                padding: 2px 12px;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                margin-left: 10px;
+            }
+
+            .song-item .audio-indicator {
+                color: #2E7D32;
+                margin-left: 8px;
+            }
+
+            .song-item .actions {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .song-item .lyrics-preview {
+                margin-top: 8px;
+                color: #5C4A3A;
+                font-size: 0.9rem;
+                padding: 8px 12px;
+                background: #F9F6F0;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: 0.2s;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+                .song-item .lyrics-preview:hover {
+                    background: #F3EBE1;
+                }
+
+                .song-item .lyrics-preview .preview-text {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    max-width: 80%;
+                }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+            .modal-overlay.active {
+                display: flex;
+            }
+
+        .modal {
+            background: #F9F6F0;
+            border-radius: 20px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 35px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+            .modal .modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 15px;
+            }
+
+                .modal .modal-header h2 {
+                    color: #4A2C2A;
+                    font-family: Georgia, serif;
+                    font-size: 1.8rem;
+                }
+
+                .modal .modal-header .close-btn {
+                    background: #C62828;
+                    color: white;
+                    border: none;
+                    border-radius: 50%;
+                    width: 40px;
+                    height: 40px;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                    .modal .modal-header .close-btn:hover {
+                        background: #8E0000;
+                    }
+
+            .modal .meta {
+                color: #5C4A3A;
+                margin-bottom: 15px;
+            }
+
+            .modal .lyrics-full {
+                background: white;
+                padding: 25px;
+                border-radius: 12px;
+                border: 1px solid #D4C5B2;
+                white-space: pre-wrap;
+                font-family: Georgia, serif;
+                line-height: 2;
+                font-size: 1.05rem;
+                max-height: 400px;
+                overflow-y: auto;
+                margin: 15px 0;
+            }
+
+            .modal .notes-section {
+                background: #F3EBE1;
+                padding: 15px;
+                border-radius: 12px;
+                border-left: 4px solid #A67B5B;
+                margin: 10px 0;
+            }
+
+            .modal .audio-section {
+                margin: 15px 0;
+                padding: 15px;
+                background: #F3EBE1;
+                border-radius: 12px;
+                text-align: center;
+            }
+
+                .modal .audio-section audio {
+                    width: 100%;
+                    max-width: 400px;
+                }
+
+            .modal .modal-actions {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                margin-top: 20px;
+            }
+
+        /* SEARCH */
+        .search-box {
+            margin-bottom: 15px;
+        }
+
+            .search-box input {
+                padding: 12px 18px;
+            }
+
+        /* UTILITY */
+        .text-muted {
+            color: #5C4A3A;
+        }
+
+        .mt-10 {
+            margin-top: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #5C4A3A;
+            border-top: 1px solid #D4C5B2;
+            margin-top: 30px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #5C4A3A;
+        }
+
+            .empty-state .icon {
+                font-size: 4rem;
+                display: block;
+                margin-bottom: 15px;
+            }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div>
+                <h1>⚜️ Charged For Christ</h1>
+                <small>Song Manager</small>
+            </div>
+            <div class="count" id="songCount">0 Songs</div>
+        </div>
+
+        <!-- ADD SONG FORM -->
+        <div class="card" style="border-left-color: #2E7D32;">
+            <h2>➕ Add / Edit Song</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="songTitle">Song Title *</label>
+                    <input type="text" id="songTitle" placeholder="e.g. 'Amazing Grace'" />
+                </div>
+                <div class="form-group">
+                    <label for="songKey">Musical Key</label>
+                    <input type="text" id="songKey" placeholder="e.g. 'Ab'" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="songLyrics">Lyrics</label>
+                <textarea id="songLyrics" placeholder="Paste the full lyrics here..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="songNotes">Practice Notes</label>
+                <textarea id="songNotes" placeholder="e.g. 'Bass 2 comes in on beat 3'"></textarea>
+            </div>
+
+            <!-- AUDIO RECORDER -->
+            <div class="form-group">
+                <label>🎤 Record 5-Second Key</label>
+                <div class="recorder">
+                    <button id="recordBtn" class="btn btn-danger btn-small">🔴 Record</button>
+                    <span class="timer" id="timerDisplay">0.0s / 5s</span>
+                    <span class="recording-indicator" id="recordingIndicator">● RECORDING</span>
+                    <button id="playbackBtn" class="btn btn-primary btn-small" disabled>▶️ Play</button>
+                    <button id="clearAudioBtn" class="btn btn-danger btn-small" disabled>✕ Clear</button>
+                    <span class="status" id="audioStatus">No recording</span>
+                </div>
+            </div>
+
+            <button id="saveSongBtn" class="btn btn-success">💾 Save Song</button>
+            <div id="formFeedback" class="mt-10" style="font-weight:600;"></div>
+        </div>
+
+        <!-- SONG LIBRARY -->
+        <div class="card">
+            <h2>📚 Song Library</h2>
+
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Search songs..." />
+            </div>
+
+            <div id="songList">
+                <div class="empty-state">
+                    <span class="icon">🎵</span>
+                    <p>No songs added yet.<br />Use the form above to add your first song!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">Charged For Christ • Soli Deo Gloria</div>
+
+    </div>
+
+    <!-- ===== SONG DETAIL MODAL ===== -->
+    <div class="modal-overlay" id="songModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Song Title</h2>
+                <button class="close-btn" id="closeModalBtn">✕</button>
+            </div>
+            <div class="meta" id="modalMeta">Key: N/A</div>
+
+            <div id="modalAudioContainer" class="audio-section" style="display:none;">
+                <p style="margin-bottom:8px; font-weight:600;">🎵 Recorded Key:</p>
+                <audio id="modalAudio" controls></audio>
+            </div>
+
+            <div class="lyrics-full" id="modalLyrics">No lyrics added yet.</div>
+
+            <div id="modalNotesContainer" class="notes-section" style="display:none;">
+                <strong>📝 Notes:</strong><br />
+                <span id="modalNotesText"></span>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="editFromModal()">✏️ Edit Song</button>
+                <button class="btn btn-danger" onclick="deleteFromModal()">🗑️ Delete Song</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  CHARGED FOR CHRIST - SIMPLE WORKING VERSION
+        // ============================================================
+
+        // --- DOM REFS ---
+        const songTitle = document.getElementById('songTitle');
+        const songKey = document.getElementById('songKey');
+        const songLyrics = document.getElementById('songLyrics');
+        const songNotes = document.getElementById('songNotes');
+        const saveBtn = document.getElementById('saveSongBtn');
+        const songList = document.getElementById('songList');
+        const searchInput = document.getElementById('searchInput');
+        const songCount = document.getElementById('songCount');
+        const formFeedback = document.getElementById('formFeedback');
+
+        const recordBtn = document.getElementById('recordBtn');
+        const playbackBtn = document.getElementById('playbackBtn');
+        const clearAudioBtn = document.getElementById('clearAudioBtn');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const audioStatus = document.getElementById('audioStatus');
+        const recordingIndicator = document.getElementById('recordingIndicator');
+
+        const modal = document.getElementById('songModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMeta = document.getElementById('modalMeta');
+        const modalLyrics = document.getElementById('modalLyrics');
+        const modalNotesText = document.getElementById('modalNotesText');
+        const modalNotesContainer = document.getElementById('modalNotesContainer');
+        const modalAudio = document.getElementById('modalAudio');
+        const modalAudioContainer = document.getElementById('modalAudioContainer');
+
+        // --- STATE ---
+        let songs = [];
+        let editingId = null;
+        let viewingId = null;
+        let audioBlob = null;
+        let mediaRecorder = null;
+        let isRecording = false;
+        let recordingTimer = null;
+        let recordingSeconds = 0;
+
+        // ============================================================
+        //  LOAD / SAVE
+        // ============================================================
+        function loadSongs() {
+            const data = localStorage.getItem('chargedForChrist_songs');
+            songs = data ? JSON.parse(data) : [];
+            renderSongs();
+            updateCount();
+        }
+
+        function saveSongs() {
+            localStorage.setItem('chargedForChrist_songs', JSON.stringify(songs));
+            renderSongs();
+            updateCount();
+        }
+
+        // ============================================================
+        //  RENDER
+        // ============================================================
+        function renderSongs(filter = '') {
+            const term = filter.toLowerCase().trim();
+            let filtered = songs;
+            if (term) {
+                filtered = songs.filter(s =>
+                    s.title.toLowerCase().includes(term) ||
+                    s.key.toLowerCase().includes(term) ||
+                    s.lyrics.toLowerCase().includes(term)
+                );
+            }
+
+            if (filtered.length === 0) {
+                songList.innerHTML = `
+                        <div class="empty-state">
+                            <span class="icon">🎵</span>
+                            <p>${songs.length === 0 ? 'No songs yet. Add one above!' : 'No matches.'}</p>
+                        </div>
+                    `;
+                return;
+            }
+
+            songList.innerHTML = filtered.map(song => {
+                const hasAudio = song.audioBase64 ? '🎵' : '';
+                const preview = song.lyrics ? song.lyrics.substring(0, 100) : 'No lyrics';
+                const previewDisplay = song.lyrics ? preview + (song.lyrics.length > 100 ? '...' : '') : 'No lyrics';
+
+                return `
+                        <div class="song-item" data-id="${song.id}">
+                            <div class="top-row">
+                                <div>
+                                    <span class="title">${song.title}</span>
+                                    <span class="key">${song.key}</span>
+                                    <span class="audio-indicator">${hasAudio}</span>
+                                </div>
+                                <div class="actions">
+                                    ${song.audioBase64 ? `<button class="btn btn-primary btn-small" onclick="playAudio('${song.id}')">▶️ Play Key</button>` : ''}
+                                    <button class="btn btn-primary btn-small" onclick="editSong('${song.id}')">✏️ Edit</button>
+                                    <button class="btn btn-danger btn-small" onclick="deleteSong('${song.id}')">🗑️</button>
+                                </div>
+                            </div>
+                            <div class="lyrics-preview" onclick="viewSong('${song.id}')">
+                                <span class="preview-text">📖 ${previewDisplay}</span>
+                                <span style="color:#A67B5B; font-weight:600;">View Lyrics →</span>
+                            </div>
+                        </div>
+                    `;
+            }).join('');
+        }
+
+        function updateCount() {
+            songCount.textContent = `${songs.length} Song${songs.length !== 1 ? 's' : ''}`;
+        }
+
+        // ============================================================
+        //  VIEW SONG (Modal)
+        // ============================================================
+        function viewSong(id) {
+            const song = songs.find(s => s.id === id);
+            if (!song) return;
+
+            viewingId = id;
+            modalTitle.textContent = song.title;
+            modalMeta.textContent = `Key: ${song.key}`;
+
+            modalLyrics.textContent = song.lyrics || 'No lyrics added yet.';
+
+            if (song.notes) {
+                modalNotesContainer.style.display = 'block';
+                modalNotesText.textContent = song.notes;
+            } else {
+                modalNotesContainer.style.display = 'none';
+            }
+
+            if (song.audioBase64) {
+                modalAudioContainer.style.display = 'block';
+                const blob = base64ToBlob(song.audioBase64);
+                const url = URL.createObjectURL(blob);
+                modalAudio.src = url;
+                modalAudio.load();
+            } else {
+                modalAudioContainer.style.display = 'none';
+                modalAudio.src = '';
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // ============================================================
+        //  CLOSE MODAL
+        // ============================================================
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            modalAudio.pause();
+        }
+
+        closeModalBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ============================================================
+        //  PLAY AUDIO FROM LIST
+        // ============================================================
+        function playAudio(id) {
+            const song = songs.find(s => s.id === id);
+            if (!song || !song.audioBase64) return;
+            const blob = base64ToBlob(song.audioBase64);
+            const audio = new Audio(URL.createObjectURL(blob));
+            audio.play();
+        }
+
+        // ============================================================
+        //  SAVE SONG
+        // ============================================================
+        async function saveSong() {
+            const title = songTitle.value.trim();
+            if (!title) {
+                formFeedback.style.color = '#C62828';
+                formFeedback.textContent = '⚠️ Please enter a title.';
+                return;
+            }
+
+            let audioBase64 = null;
+            if (audioBlob) {
+                audioBase64 = await blobToBase64(audioBlob);
+            }
+
+            const newSong = {
+                title: title,
+                key: songKey.value.trim() || 'N/A',
+                lyrics: songLyrics.value.trim(),
+                notes: songNotes.value.trim(),
+                audioBase64: audioBase64,
+                created: new Date().toISOString()
+            };
+
+            if (editingId) {
+                const idx = songs.findIndex(s => s.id === editingId);
+                if (idx !== -1) {
+                    newSong.id = editingId;
+                    newSong.created = songs[idx].created;
+                    songs[idx] = newSong;
+                }
+                editingId = null;
+                saveBtn.textContent = '💾 Save Song';
+                formFeedback.style.color = '#2E7D32';
+                formFeedback.textContent = `✅ "${title}" updated!`;
+            } else {
+                newSong.id = Date.now() + Math.random();
+                songs.push(newSong);
+                formFeedback.style.color = '#2E7D32';
+                formFeedback.textContent = `✅ "${title}" added!`;
+            }
+
+            saveSongs();
+            clearForm();
+            setTimeout(() => { formFeedback.textContent = ''; }, 3000);
+        }
+
+        // ============================================================
+        //  EDIT SONG
+        // ============================================================
+        function editSong(id) {
+            const song = songs.find(s => s.id === id);
+            if (!song) return;
+
+            closeModal();
+            editingId = id;
+            songTitle.value = song.title;
+            songKey.value = song.key;
+            songLyrics.value = song.lyrics;
+            songNotes.value = song.notes;
+
+            if (song.audioBase64) {
+                audioBlob = base64ToBlob(song.audioBase64);
+                audioStatus.textContent = '✅ Audio loaded';
+                playbackBtn.disabled = false;
+                clearAudioBtn.disabled = false;
+            } else {
+                audioBlob = null;
+                audioStatus.textContent = 'No recording';
+                playbackBtn.disabled = true;
+                clearAudioBtn.disabled = true;
+            }
+
+            saveBtn.textContent = '🔄 Update Song';
+            formFeedback.style.color = '#4A2C2A';
+            formFeedback.textContent = `✏️ Editing "${song.title}"`;
+
+            document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ============================================================
+        //  DELETE SONG
+        // ============================================================
+        function deleteSong(id) {
+            const song = songs.find(s => s.id === id);
+            if (!song) return;
+            if (!confirm(`Delete "${song.title}" permanently?`)) return;
+
+            songs = songs.filter(s => s.id !== id);
+            saveSongs();
+            closeModal();
+
+            if (editingId === id) {
+                clearForm();
+                editingId = null;
+                saveBtn.textContent = '💾 Save Song';
+            }
+        }
+
+        // ============================================================
+        //  CLEAR FORM
+        // ============================================================
+        function clearForm() {
+            songTitle.value = '';
+            songKey.value = '';
+            songLyrics.value = '';
+            songNotes.value = '';
+            audioBlob = null;
+            audioStatus.textContent = 'No recording';
+            playbackBtn.disabled = true;
+            clearAudioBtn.disabled = true;
+            editingId = null;
+            saveBtn.textContent = '💾 Save Song';
+            formFeedback.textContent = '';
+        }
+
+        // ============================================================
+        //  AUDIO RECORDER
+        // ============================================================
+        async function startRecording() {
+            if (isRecording) return;
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                const chunks = [];
+
+                mediaRecorder.ondataavailable = e => chunks.push(e.data);
+                mediaRecorder.onstop = () => {
+                    audioBlob = new Blob(chunks, { type: 'audio/webm' });
+                    playbackBtn.disabled = false;
+                    clearAudioBtn.disabled = false;
+                    audioStatus.textContent = '✅ Recording saved!';
+                    recordingIndicator.classList.remove('active');
+                    isRecording = false;
+                    clearInterval(recordingTimer);
+                    recordBtn.textContent = '🔴 Record';
+                    recordBtn.style.background = '#C62828';
+                    stream.getTracks().forEach(t => t.stop());
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                recordingSeconds = 0;
+                timerDisplay.textContent = '0.0s / 5s';
+                recordingIndicator.classList.add('active');
+                recordBtn.textContent = '⏹️ Stop';
+                recordBtn.style.background = '#8E0000';
+                audioStatus.textContent = '🎤 Recording...';
+
+                recordingTimer = setInterval(() => {
+                    recordingSeconds += 0.1;
+                    timerDisplay.textContent = `${Math.min(recordingSeconds, 5).toFixed(1)}s / 5s`;
+                    if (recordingSeconds >= 5.0 && mediaRecorder && mediaRecorder.state === 'recording') {
+                        mediaRecorder.stop();
+                    }
+                }, 100);
+
+            } catch (err) {
+                alert('Microphone access denied.');
+                console.error(err);
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+        }
+
+        function playRecordedAudio() {
+            if (!audioBlob) return;
+            const audio = new Audio(URL.createObjectURL(audioBlob));
+            audio.play();
+        }
+
+        function clearRecordedAudio() {
+            if (!confirm('Remove the recorded audio?')) return;
+            audioBlob = null;
+            audioStatus.textContent = 'No recording';
+            playbackBtn.disabled = true;
+            clearAudioBtn.disabled = true;
+        }
+
+        // ============================================================
+        //  MODAL BUTTONS
+        // ============================================================
+        function editFromModal() {
+            if (viewingId) {
+                const id = viewingId;
+                closeModal();
+                editSong(id);
+            }
+        }
+
+        function deleteFromModal() {
+            if (viewingId) {
+                deleteSong(viewingId);
+            }
+        }
+
+        // ============================================================
+        //  HELPERS
+        // ============================================================
+        function base64ToBlob(base64) {
+            const byteChars = atob(base64);
+            const arr = new Uint8Array(byteChars.length);
+            for (let i = 0; i < byteChars.length; i++) {
+                arr[i] = byteChars.charCodeAt(i);
+            }
+            return new Blob([arr], { type: 'audio/webm' });
+        }
+
+        function blobToBase64(blob) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    resolve(reader.result.split(',')[1]);
+                };
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        // ============================================================
+        //  EVENT LISTENERS
+        // ============================================================
+        saveBtn.addEventListener('click', saveSong);
+
+        recordBtn.addEventListener('click', () => {
+            isRecording ? stopRecording() : startRecording();
+        });
+
+        playbackBtn.addEventListener('click', playRecordedAudio);
+        clearAudioBtn.addEventListener('click', clearRecordedAudio);
+
+        searchInput.addEventListener('input', (e) => {
+            renderSongs(e.target.value);
+        });
+
+        // Enter key to save
+        songTitle.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') saveSong();
+        });
+
+        // ============================================================
+        //  EXPOSE GLOBAL FUNCTIONS
+        // ============================================================
+        window.viewSong = viewSong;
+        window.editSong = editSong;
+        window.deleteSong = deleteSong;
+        window.playAudio = playAudio;
+        window.editFromModal = editFromModal;
+        window.deleteFromModal = deleteFromModal;
+
+        // ============================================================
+        //  INIT
+        // ============================================================
+        loadSongs();
+        console.log('⚜️ Charged For Christ loaded!');
+    </script>
+
+</body>
+</html>
